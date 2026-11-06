@@ -1,18 +1,16 @@
-# ApexTrack
+# ApexTrack World Clock
 
-ApexTrack is a small, beginner-friendly GPS telemetry program written in **Python only**. It uses Python's built-in libraries, so there are no packages to install. Enter GPS readings to see speed, pace, distance, elevation change, and GPS accuracy.
-
-> **Simple-version note:** A browser's `navigator.geolocation.watchPosition()` is a JavaScript API, not a Python API. To keep this project pure Python and easy to understand, this version asks you to enter each GPS reading. A future web version could use a small amount of JavaScript to read the browser's GPS.
+ApexTrack is a beginner-friendly digital clock written in Python. It displays the current local time in Los Angeles, New York, London, Tokyo, Sydney, and UTC, updating every second. It uses only Python's standard library—there are no packages to install.
 
 ## Requirements
 
-- Python 3.8 or newer
+- Python 3.9 or newer
 - A terminal or command prompt
-- GPS coordinates and readings to enter (for example, from a phone's location app)
+- A time zone database provided by your operating system (usually already available on macOS and Linux)
 
-No third-party packages are needed.
+Python includes the `zoneinfo` module for time zones. On some Windows installations, Python may not have access to time zone data; if that happens, use a Python installation with an IANA time zone database available.
 
-## Run ApexTrack
+## Run the clock
 
 1. Download or clone this repository.
 2. Open a terminal in the project folder.
@@ -22,31 +20,30 @@ No third-party packages are needed.
 python app.py
 ```
 
-If your computer uses `python3`, run `python3 app.py` instead. Enter latitude, longitude, elevation, and accuracy for each reading. Enter `q` when asked for a new reading to finish the session.
+If your computer uses `python3`, run `python3 app.py` instead. The clock refreshes once per second. Press **Ctrl+C** to stop it.
 
-## What the program calculates
+## How it works
 
-- **Distance:** Haversine formula, in kilometres.
-- **Speed:** distance since the previous reading divided by the time between readings.
-- **Pace:** elapsed session time per kilometre.
-- **Elevation:** current elevation, plus accumulated climb and descent.
-- **Accuracy:** displays the accuracy radius supplied with each reading.
+- `TIME_ZONES` is a list of city names and time zone names.
+- `ZoneInfo` accounts for time zone rules, including daylight saving time.
+- `datetime.now()` gets the current time in each selected zone.
+- `strftime()` formats the time and date for display.
+- `time.sleep(1)` waits one second between screen updates.
 
-The readings are kept in memory while the program runs. The program does not save or upload your location.
+To add a city, add a `(city name, IANA time zone)` pair to `TIME_ZONES`. For example:
 
-## How the code is organized
+```python
+("Paris", "Europe/Paris"),
+```
 
-- `app.py` contains the whole program.
-- `haversine_km()` calculates distance between two points on Earth.
-- `ask_number()` repeats a question if the input is not a number.
-- `main()` asks for readings and prints telemetry.
+## Project files
 
-## Roadmap
+- `app.py` contains the complete clock program.
+- `requirements.txt` notes that the project uses only Python's standard library.
 
-- Connect to a GPS receiver through a clearly documented Python interface.
-- Save a session to a local CSV file.
-- Add a simple route plot using an optional mapping library.
-- Add distance split summaries and unit preferences.
-- Add automated tests for distance and pace calculations.
+## Future ideas
 
-The roadmap features would add optional components; the core beginner edition stays small and dependency-free.
+- Let the user choose which cities to show.
+- Add 24-hour time format.
+- Add alarms for selected time zones.
+- Build a graphical interface using an optional Python library.
